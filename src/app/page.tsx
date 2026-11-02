@@ -170,8 +170,13 @@ export default async function Home() {
       </section>
 
       <footer className="footer">
-        <span>© {year} {basics.name}</span>
-        <span>{basics.location}</span>
+        {basics.footerNote && (
+          <p className="footer-note"><RichText text={basics.footerNote} /></p>
+        )}
+        <div className="footer-meta">
+          <span>© {year} {basics.name}</span>
+          <span>{basics.location}</span>
+        </div>
       </footer>
     </div>
   );

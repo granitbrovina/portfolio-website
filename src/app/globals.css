@@ -123,7 +123,9 @@ ul.points li::marker { color: var(--accent); }
 .email { font: 500 1.15rem/1.2 var(--mono); color: var(--fg); user-select: all; overflow-wrap: anywhere; }
 .copied { font: 400 0.8rem/1 var(--mono); color: var(--ok); }
 
-.footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.85rem; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.footer { border-top: 1px solid var(--line); padding-block: 28px 40px; color: var(--muted); font-size: 0.85rem; display: grid; gap: 14px; }
+.footer-note { margin: 0 auto; max-width: 52ch; text-align: center; text-wrap: balance; }
+.footer-meta { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
 @media (max-width: 760px) {
   .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 28px 48px; }

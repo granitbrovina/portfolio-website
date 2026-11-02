@@ -222,6 +222,7 @@ function ProfilePanel({ content, update }: PanelProps) {
         <Field id="b-github" label="GitHub URL" value={b.github} onChange={set("github")} />
         <Field id="b-website" label="Website URL" value={b.website} onChange={set("website")} />
       </div>
+      <Field id="b-footer" label="Footer note" value={b.footerNote} onChange={set("footerNote")} hint="Small centered line at the bottom of the site. Links work as [text](https://…). Leave empty to hide it." />
 
       <SectionHead
         title="What I do"

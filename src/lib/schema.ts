@@ -97,6 +97,12 @@ export const BasicsSchema = z.object({
   linkedin: z.string().default(""),
   github: z.string().default(""),
   website: z.string().default(""),
+  // Small line at the bottom of the site. Supports [text](url) links. Empty hides it.
+  footerNote: z
+    .string()
+    .default(
+      "Want a portfolio site like this one? It's open source, so you can [build your own](https://github.com/granitbrovina/portfolio-website).",
+    ),
 });
 
 const HEX = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
