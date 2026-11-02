@@ -1,7 +1,7 @@
 import { dateRange, type Content } from "@/lib/schema";
 import RichText from "../RichText";
 import { schibsted } from "./fonts";
-import type { Prepared } from "./shared";
+import { nbsp, type Prepared } from "./shared";
 import "./results.css";
 
 /** Results-first theme: Swiss-style type, a huge name and the key numbers up front. */
@@ -39,7 +39,7 @@ export default function Results({ content, p }: { content: Content; p: Prepared 
           <section className="rs-numbers" aria-label="Key numbers">
             {highlights.map((h, i) => (
               <div key={h.id} className="rs-number">
-                <span className="rs-value">{i === 0 ? <mark>{h.value}</mark> : h.value}</span>
+                <span className="rs-value">{i === 0 ? <mark>{nbsp(h.value)}</mark> : h.value}</span>
                 <span className="rs-meaning">{h.label}</span>
               </div>
             ))}

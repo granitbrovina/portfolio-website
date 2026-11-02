@@ -1,7 +1,7 @@
 import { dateRange, type Content } from "@/lib/schema";
 import RichText from "../RichText";
 import { figtree } from "./fonts";
-import type { Prepared } from "./shared";
+import { nbsp, type Prepared } from "./shared";
 import "./corporate.css";
 
 /** Corporate Blue: inspired by na.panasonic.com — royal-blue band, dark rounded hero card, centred sections, navy footer. */
@@ -47,7 +47,7 @@ export default function Corporate({ content, p }: { content: Content; p: Prepare
             <div className="cp-numbers">
               {highlights.map((h) => (
                 <div key={h.id} className="cp-number">
-                  <span className="cp-value">{h.value}</span>
+                  <span className="cp-value">{nbsp(h.value)}</span>
                   <span className="cp-meaning">{h.label}</span>
                 </div>
               ))}

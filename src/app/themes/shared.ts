@@ -25,3 +25,6 @@ export function prepare(content: Content) {
 }
 
 export type Prepared = ReturnType<typeof prepare>;
+
+/** Keeps short values like "20 → 1 min" on one line where space allows. */
+export const nbsp = (s: string) => s.replace(/ /g, "\u00a0");

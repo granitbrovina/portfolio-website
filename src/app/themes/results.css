@@ -28,7 +28,7 @@
 .rs-numbers { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); border-bottom: 1px solid var(--rs-line); }
 .rs-number { padding: 32px 24px 32px 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .rs-number + .rs-number { padding-left: 24px; border-left: 1px solid var(--rs-line); }
-.rs-value { font-size: clamp(2.4rem, 4.4vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.rs-value { font-size: clamp(2rem, 3.4vw, 2.75rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .rs-value mark { background: var(--rs-mark); color: var(--rs-ink); padding: 0 6px; }
 .rs-meaning { font-size: 15px; line-height: 1.4; color: #3A3A36; }
 

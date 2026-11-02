@@ -1,7 +1,7 @@
 import { dateRange, initials, type Content } from "@/lib/schema";
 import RichText from "../RichText";
 import { atkinson, familjen } from "./fonts";
-import type { Prepared } from "./shared";
+import { nbsp, type Prepared } from "./shared";
 import "./granite.css";
 
 const yearOf = (s: string): number | null => {
@@ -61,7 +61,7 @@ export default function Granite({ content, p }: { content: Content; p: Prepared 
           <section className="gr-numbers" aria-label="Key numbers">
             {highlights.map((h) => (
               <div key={h.id} className="gr-number">
-                <span className="gr-value">{h.value}</span>
+                <span className="gr-value">{nbsp(h.value)}</span>
                 <span className="gr-meaning">{h.label}</span>
               </div>
             ))}

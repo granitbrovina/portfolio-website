@@ -1,7 +1,7 @@
 import { dateRange, initials, type Content } from "@/lib/schema";
 import RichText from "../RichText";
 import { notoSans, outfit } from "./fonts";
-import type { Prepared } from "./shared";
+import { nbsp, type Prepared } from "./shared";
 import "./workplace.css";
 
 const Arrow = () => (
@@ -62,7 +62,7 @@ export default function Workplace({ content, p }: { content: Content; p: Prepare
             <div className="wp-numbers">
               {highlights.map((h) => (
                 <div key={h.id} className="wp-number">
-                  <span className="wp-value">{h.value}</span>
+                  <span className="wp-value">{nbsp(h.value)}</span>
                   <span className="wp-meaning">{h.label}</span>
                 </div>
               ))}

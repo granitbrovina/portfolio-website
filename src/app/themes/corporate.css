@@ -29,6 +29,8 @@
 .cp-eyebrow { font-size: 14px; font-weight: 600; color: #BFD3F5; letter-spacing: 0.02em; }
 .th-corporate .cp-h1 { font: 700 clamp(2.2rem, 4.2vw, 3rem)/1.06 var(--cp-font); letter-spacing: -0.015em; text-wrap: balance; max-width: 18ch; }
 .cp-lede { font-size: 18px; line-height: 1.4; color: #E6ECF5; max-width: 46ch; }
+.th-corporate .cp-hero a:not(.cp-btn) { color: #A9C6F7; }
+.th-corporate .cp-hero a:not(.cp-btn):hover { color: #FFFFFF; }
 .cp-ctas { display: flex; gap: 12px; flex-wrap: wrap; padding-top: 6px; }
 .th-corporate .cp-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: var(--cp-white); color: var(--cp-ink); text-decoration: none; font-weight: 600; font-size: 15px; border: 1.5px solid var(--cp-white); }
 .th-corporate .cp-btn:hover { background: #E8EEF8; color: var(--cp-ink); }
@@ -43,7 +45,7 @@
 .cp-numbers { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; background: var(--cp-blue); border-radius: 12px; overflow: hidden; }
 .cp-number { padding: 32px 28px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; color: var(--cp-white); min-width: 0; }
 .cp-number + .cp-number { border-left: 1px solid rgba(255, 255, 255, 0.22); }
-.cp-value { font: 800 clamp(2rem, 3.4vw, 2.75rem)/1.05 var(--cp-font); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.cp-value { font: 800 clamp(1.8rem, 2.8vw, 2.3rem)/1.05 var(--cp-font); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .cp-meaning { font-size: 15px; line-height: 1.4; color: #DCE6F7; max-width: 26ch; }
 
 .cp-focus { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 48px 32px; }

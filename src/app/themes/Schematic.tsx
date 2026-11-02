@@ -1,7 +1,7 @@
 import { dateRange, type Content } from "@/lib/schema";
 import RichText from "../RichText";
 import { archivo, jetbrains } from "./fonts";
-import type { Prepared } from "./shared";
+import { nbsp, type Prepared } from "./shared";
 import "./schematic.css";
 
 /** Engineering-drawing theme: grid paper, wide headings, monospace sheet labels. */
@@ -58,7 +58,7 @@ export default function Schematic({ content, p }: { content: Content; p: Prepare
             <div className="sc-numbers">
               {highlights.map((h) => (
                 <div key={h.id} className="sc-number">
-                  <span className="sc-value">{h.value}</span>
+                  <span className="sc-value">{nbsp(h.value)}</span>
                   <span className="sc-meaning">{h.label}</span>
                 </div>
               ))}
