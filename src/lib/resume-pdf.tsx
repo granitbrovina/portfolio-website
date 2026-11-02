@@ -142,12 +142,12 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
           <View style={s.section}>
             <Text style={s.sectionTitle}>Education</Text>
             {content.education.map((e) => (
-              <View key={e.id} style={s.entry} wrap={false}>
-                <View style={s.entryHead}>
+              <View key={e.id} style={[s.entryHead, { marginBottom: 2 }]} wrap={false}>
+                <Text style={{ flex: 1 }}>
                   <Text style={s.entryTitle}>{e.program}</Text>
-                  <Text style={s.entryDate}>{dateRange(e.start, e.end)}</Text>
-                </View>
-                <Text style={s.entrySub}>{[e.institution, e.location, e.note].filter(Boolean).join(" · ")}</Text>
+                  <Text style={s.entrySub}>{"  " + [e.institution, e.location, e.note].filter(Boolean).join(" · ")}</Text>
+                </Text>
+                <Text style={s.entryDate}>{dateRange(e.start, e.end)}</Text>
               </View>
             ))}
             {content.languages.length > 0 ? (
