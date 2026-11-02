@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { unstable_cache } from "next/cache";
 import { ContentSchema, type Content } from "./schema";
 import { seedContent } from "./seed";
 
@@ -6,19 +7,14 @@ type Sql = ReturnType<typeof neon>;
 
 let schemaReady: Promise<void> | null = null;
 
-/** Cache tag for every read of the site content. Saving calls revalidateTag(CONTENT_TAG). */
+/** Cache tag for the site content. Saving calls revalidateTag(CONTENT_TAG). */
 export const CONTENT_TAG = "site-content";
 
-/**
- * Neon talks to Postgres over fetch(), and Next.js caches fetch responses in its Data Cache.
- * Reads of the site content are tagged so a save can invalidate them everywhere at once
- * (homepage, layout metadata, favicon, photo, resume). Everything else skips the cache.
- */
-function connection(mode: "content" | "fresh" = "fresh"): Sql | null {
+// Neon queries run over fetch(). They must never land in Next's fetch Data Cache on their own,
+// where an old copy can outlive revalidatePath; caching happens only through cachedContent below.
+function connection(): Sql | null {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  if (!url) return null;
-  const fetchOptions = (mode === "content" ? { next: { tags: [CONTENT_TAG] } } : { cache: "no-store" }) as RequestInit;
-  return neon(url, { fetchOptions });
+  return url ? neon(url, { fetchOptions: { cache: "no-store" } }) : null;
 }
 
 /** Creates the two tables on first use, so a fresh deploy needs no migration step. */
@@ -48,23 +44,37 @@ export function hasDatabase(): boolean {
   return connection() !== null;
 }
 
-/** Current site content. Falls back to the seed if the database is missing, empty or unreachable. */
-export async function getContent(): Promise<{ content: Content; updatedAt: string | null; source: "db" | "seed" }> {
-  const sql = connection("content");
+type ContentResult = { content: Content; updatedAt: string | null; source: "db" | "seed" };
+
+/** Reads the stored content. Throws on any database problem so failures are never cached. */
+async function readStoredContent(): Promise<ContentResult> {
+  const sql = connection();
   if (!sql) return { content: seedContent, updatedAt: null, source: "seed" };
+  await ensureSchema(sql);
+  const rows = (await sql`SELECT data, updated_at FROM site_content WHERE id = 'main'`) as {
+    data: unknown;
+    updated_at: string;
+  }[];
+  if (rows.length === 0) return { content: seedContent, updatedAt: null, source: "seed" };
+  const parsed = ContentSchema.safeParse(rows[0].data);
+  if (!parsed.success) {
+    console.error("Stored content failed validation.", parsed.error.flatten());
+    throw new Error("Stored content failed validation.");
+  }
+  return { content: parsed.data, updatedAt: String(rows[0].updated_at), source: "db" };
+}
+
+/**
+ * One shared, tagged cache entry for the content. Every reader (homepage, layout metadata,
+ * favicon, photo, resume, admin) goes through it, and a save clears it with revalidateTag,
+ * so nothing can keep serving an older copy.
+ */
+const cachedContent = unstable_cache(readStoredContent, ["site-content-v1"], { tags: [CONTENT_TAG], revalidate: 3600 });
+
+/** Current site content. Falls back to the seed if the database is missing, empty or unreachable. */
+export async function getContent(): Promise<ContentResult> {
   try {
-    await ensureSchema(sql);
-    const rows = (await sql`SELECT data, updated_at FROM site_content WHERE id = 'main'`) as {
-      data: unknown;
-      updated_at: string;
-    }[];
-    if (rows.length === 0) return { content: seedContent, updatedAt: null, source: "seed" };
-    const parsed = ContentSchema.safeParse(rows[0].data);
-    if (!parsed.success) {
-      console.error("Stored content failed validation; serving seed.", parsed.error.flatten());
-      return { content: seedContent, updatedAt: null, source: "seed" };
-    }
-    return { content: parsed.data, updatedAt: String(rows[0].updated_at), source: "db" };
+    return await cachedContent();
   } catch (err) {
     console.error("Database read failed; serving seed.", err);
     return { content: seedContent, updatedAt: null, source: "seed" };
