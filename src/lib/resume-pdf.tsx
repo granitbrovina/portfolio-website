@@ -10,14 +10,14 @@ import { parseLinks } from "./richtext";
 Font.registerHyphenationCallback((word) => [word]);
 
 const s = StyleSheet.create({
-  page: { paddingTop: 34, paddingBottom: 34, paddingHorizontal: 46, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.33, color: "#1b1f1d" },
+  page: { paddingTop: 30, paddingBottom: 30, paddingHorizontal: 40, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.33, color: "#1b1f1d" },
   name: { fontFamily: "Helvetica-Bold", fontSize: 20, lineHeight: 1.2, marginBottom: 4 },
   headline: { fontSize: 10.5, lineHeight: 1.35, color: "#1d5c86", marginBottom: 6 },
   contact: { fontSize: 9, color: "#4a524e", flexDirection: "row", flexWrap: "wrap" },
   contactItem: { marginRight: 10 },
   link: { color: "#4a524e", textDecoration: "none" },
   inlineLink: { color: "#1b1f1d", textDecoration: "none" },
-  section: { marginTop: 11 },
+  section: { marginTop: 10 },
   sectionTitle: { fontFamily: "Helvetica-Bold", fontSize: 9.5, letterSpacing: 1, textTransform: "uppercase", color: "#1d5c86", borderBottomWidth: 0.75, borderBottomColor: "#c9d0cb", paddingBottom: 2.5, marginBottom: 5 },
   summary: { fontSize: 10 },
   entry: { marginBottom: 6 },
