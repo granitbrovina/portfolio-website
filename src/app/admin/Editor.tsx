@@ -199,6 +199,8 @@ function SectionHead({ title, intro, onAdd, addLabel }: { title: string; intro?:
 
 type PanelProps = { content: Content; update: Update };
 
+const LINK_HINT = "Add a link with [text](https://example.com).";
+
 function ProfilePanel({ content, update }: PanelProps) {
   const b = content.basics;
   const set = (key: keyof typeof b) => (v: string) => update((d) => { d.basics[key] = v; });
@@ -210,7 +212,7 @@ function ProfilePanel({ content, update }: PanelProps) {
         <Field id="b-headline" label="Role line" value={b.headline} onChange={set("headline")} hint="Short, e.g. Data & Support Engineer. Used in page titles." />
       </div>
       <Field id="b-hero" label="Homepage headline" value={b.heroTitle} onChange={set("heroTitle")} hint="The large sentence at the top of the site." />
-      <Field id="b-summary" label="Summary" value={b.summary} onChange={set("summary")} multiline rows={4} />
+      <Field id="b-summary" label="Summary" value={b.summary} onChange={set("summary")} multiline rows={4} hint={LINK_HINT} />
       <div className="adm-grid two">
         <Field id="b-avail" label="Availability line" value={b.availability} onChange={set("availability")} hint="Shown above the headline. Leave empty to hide." />
         <Field id="b-location" label="Location" value={b.location} onChange={set("location")} />
@@ -249,7 +251,7 @@ function ExperiencePanel({ content, update }: PanelProps) {
     <section className="adm-panel">
       <SectionHead
         title="Experience"
-        intro="Roles in the order they appear. Consecutive roles at the same company are grouped on the site. Leave End empty for a current role."
+        intro="Roles in the order they appear. Consecutive roles at the same company are grouped on the site. Leave End empty for a current role. Any text field can include links written as [text](https://…)."
         addLabel="Add role"
         onAdd={() => update((d) => { d.experience.unshift({ id: newId(), role: "", company: "", location: "", start: "", end: "", summary: "", bullets: [], variants: [] }); })}
       />
@@ -259,7 +261,7 @@ function ExperiencePanel({ content, update }: PanelProps) {
             <ItemTools index={i} count={content.experience.length} label={r.role || "role"} onMove={(to) => update((d) => move(d.experience, i, to))} onRemove={() => update((d) => { d.experience.splice(i, 1); })} />
             <div className="adm-grid two">
               <Field id={`e-${r.id}-role`} label="Role" value={r.role} onChange={(v) => update((d) => { d.experience[i].role = v; })} />
-              <Field id={`e-${r.id}-co`} label="Company" value={r.company} onChange={(v) => update((d) => { d.experience[i].company = v; })} />
+              <Field id={`e-${r.id}-co`} label="Company" value={r.company} hint={LINK_HINT} onChange={(v) => update((d) => { d.experience[i].company = v; })} />
               <Field id={`e-${r.id}-start`} label="Start" value={r.start} placeholder="2021 or Mar 2021" onChange={(v) => update((d) => { d.experience[i].start = v; })} />
               <Field id={`e-${r.id}-end`} label="End" value={r.end} placeholder="Present" onChange={(v) => update((d) => { d.experience[i].end = v; })} />
               <Field id={`e-${r.id}-loc`} label="Location" value={r.location} onChange={(v) => update((d) => { d.experience[i].location = v; })} />
@@ -313,7 +315,7 @@ function ProjectsPanel({ content, update }: PanelProps) {
               <Field id={`p-${p.id}-name`} label="Name" value={p.name} onChange={(v) => update((d) => { d.projects[i].name = v; })} />
               <Field id={`p-${p.id}-kind`} label="Label" value={p.kind} placeholder="Internal tool" onChange={(v) => update((d) => { d.projects[i].kind = v; })} />
             </div>
-            <Field id={`p-${p.id}-desc`} label="Description" value={p.description} onChange={(v) => update((d) => { d.projects[i].description = v; })} multiline />
+            <Field id={`p-${p.id}-desc`} label="Description" value={p.description} hint={LINK_HINT} onChange={(v) => update((d) => { d.projects[i].description = v; })} multiline />
             <div className="adm-grid two">
               <Field id={`p-${p.id}-tags`} label="Tags" value={p.tags.join(", ")} hint="Comma-separated" onChange={(v) => update((d) => { d.projects[i].tags = v.split(",").map((t) => t.trim()).filter(Boolean); })} />
               <Field id={`p-${p.id}-url`} label="Link (optional)" value={p.url} onChange={(v) => update((d) => { d.projects[i].url = v; })} />

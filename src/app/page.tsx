@@ -1,6 +1,7 @@
 import { getContent } from "@/lib/db";
 import { dateRange } from "@/lib/schema";
 import CopyEmail from "./CopyEmail";
+import RichText from "./RichText";
 
 // Rebuilt at most hourly, and immediately whenever the admin panel saves.
 export const revalidate = 3600;
@@ -36,7 +37,7 @@ export default async function Home() {
         <div>
           {basics.availability && <div className="status">{basics.availability}</div>}
           <h1>{basics.heroTitle || basics.headline || basics.name}</h1>
-          {basics.summary && <p className="lede">{basics.summary}</p>}
+          {basics.summary && <p className="lede"><RichText text={basics.summary} /></p>}
           <div className="ctas">
             <a className="btn primary" href="#contact">Get in touch</a>
             {basics.linkedin && <a className="btn" href={basics.linkedin} target="_blank" rel="noopener">LinkedIn</a>}
@@ -57,7 +58,7 @@ export default async function Home() {
               {focusAreas.map((f) => (
                 <div key={f.id}>
                   <h3>{f.title}</h3>
-                  <p>{f.body}</p>
+                  <p><RichText text={f.body} /></p>
                 </div>
               ))}
             </div>
@@ -78,11 +79,11 @@ export default async function Home() {
                         <h3>{r.role}</h3>
                         <span className="when">{dateRange(r.start, r.end)}</span>
                       </div>
-                      {ri === 0 && <div className="org">{[g.company, g.location].filter(Boolean).join(" · ")}</div>}
-                      {r.summary && <p>{r.summary}</p>}
+                      {ri === 0 && <div className="org"><RichText text={[g.company, g.location].filter(Boolean).join(" · ")} /></div>}
+                      {r.summary && <p><RichText text={r.summary} /></p>}
                       {r.bullets.length > 0 && (
                         <ul className="points">
-                          {r.bullets.map((b) => <li key={b.id}>{b.text}</li>)}
+                          {r.bullets.map((b) => <li key={b.id}><RichText text={b.text} /></li>)}
                         </ul>
                       )}
                     </div>
@@ -103,7 +104,7 @@ export default async function Home() {
                 <article key={p.id} className="proj">
                   {p.kind && <span className="kind">{p.kind}</span>}
                   <h3>{p.url ? <a href={p.url} target="_blank" rel="noopener">{p.name}</a> : p.name}</h3>
-                  <p>{p.description}</p>
+                  <p><RichText text={p.description} /></p>
                   {p.tags.length > 0 && (
                     <div className="tags">{p.tags.map((t) => <span key={t}>{t}</span>)}</div>
                   )}

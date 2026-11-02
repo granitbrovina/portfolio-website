@@ -1,5 +1,6 @@
 import { Document, Link, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { dateRange, inVariant, type Content } from "./schema";
+import { parseLinks } from "./richtext";
 
 /**
  * One-column, text-first layout so applicant tracking systems can read it.
@@ -12,6 +13,7 @@ const s = StyleSheet.create({
   contact: { fontSize: 9, color: "#4a524e", flexDirection: "row", flexWrap: "wrap" },
   contactItem: { marginRight: 10 },
   link: { color: "#4a524e", textDecoration: "none" },
+  inlineLink: { color: "#1b1f1d", textDecoration: "none" },
   section: { marginTop: 14 },
   sectionTitle: { fontFamily: "Helvetica-Bold", fontSize: 9.5, letterSpacing: 1, textTransform: "uppercase", color: "#1d5c86", borderBottomWidth: 0.75, borderBottomColor: "#c9d0cb", paddingBottom: 3, marginBottom: 6 },
   summary: { fontSize: 10 },
@@ -28,11 +30,22 @@ const s = StyleSheet.create({
   skillItems: { flex: 1 },
 });
 
+/** Text with [label](url) links rendered as clickable PDF links. */
+function Rich({ text, style }: { text: string; style?: (typeof s)[keyof typeof s] }) {
+  return (
+    <Text style={style}>
+      {parseLinks(text).map((seg, i) =>
+        seg.href ? <Link key={i} src={seg.href} style={s.inlineLink}>{seg.text}</Link> : seg.text,
+      )}
+    </Text>
+  );
+}
+
 function Bullet({ text }: { text: string }) {
   return (
     <View style={s.bulletRow}>
       <Text style={s.bulletDot}>•</Text>
-      <Text style={s.bulletText}>{text}</Text>
+      <Rich style={s.bulletText} text={text} />
     </View>
   );
 }
@@ -73,7 +86,7 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
         {summary ? (
           <View style={s.section}>
             <Text style={s.sectionTitle}>Summary</Text>
-            <Text style={s.summary}>{summary}</Text>
+            <Rich style={s.summary} text={summary} />
           </View>
         ) : null}
 
@@ -86,8 +99,8 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
                   <Text style={s.entryTitle}>{e.role}</Text>
                   <Text style={s.entryDate}>{dateRange(e.start, e.end)}</Text>
                 </View>
-                <Text style={s.entrySub}>{[e.company, e.location].filter(Boolean).join(" · ")}</Text>
-                {e.summary ? <Text>{e.summary}</Text> : null}
+                <Rich style={s.entrySub} text={[e.company, e.location].filter(Boolean).join(" · ")} />
+                {e.summary ? <Rich text={e.summary} /> : null}
                 {e.bullets.map((b) => <Bullet key={b.id} text={b.text} />)}
               </View>
             ))}
@@ -103,7 +116,7 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
                   <Text style={s.entryTitle}>{p.name}</Text>
                   {p.kind ? <Text style={s.entryDate}>{p.kind}</Text> : null}
                 </View>
-                <Text>{p.description}</Text>
+                <Rich text={p.description} />
                 {p.tags.length > 0 ? <Text style={s.entrySub}>{p.tags.join(" · ")}</Text> : null}
               </View>
             ))}

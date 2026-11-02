@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Bricolage_Grotesque, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { getContent } from "@/lib/db";
 import { faviconVersion } from "@/lib/schema";
+import { stripLinks } from "@/lib/richtext";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
@@ -14,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const b = content.basics;
   const v = faviconVersion(content);
   const title = b.name || "Portfolio";
-  const description = [b.headline, b.location].filter(Boolean).join(" · ") || b.summary;
+  const description = [b.headline, b.location].filter(Boolean).join(" · ") || stripLinks(b.summary);
   return {
     title,
     description,
