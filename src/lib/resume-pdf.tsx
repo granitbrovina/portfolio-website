@@ -28,11 +28,11 @@ const s = StyleSheet.create({
   skillItems: { flex: 1 },
 });
 
-function Bullet({ children }: { children: string }) {
+function Bullet({ text }: { text: string }) {
   return (
     <View style={s.bulletRow}>
       <Text style={s.bulletDot}>•</Text>
-      <Text style={s.bulletText}>{children}</Text>
+      <Text style={s.bulletText}>{text}</Text>
     </View>
   );
 }
@@ -88,7 +88,7 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
                 </View>
                 <Text style={s.entrySub}>{[e.company, e.location].filter(Boolean).join(" · ")}</Text>
                 {e.summary ? <Text>{e.summary}</Text> : null}
-                {e.bullets.map((b) => <Bullet key={b.id}>{b.text}</Bullet>)}
+                {e.bullets.map((b) => <Bullet key={b.id} text={b.text} />)}
               </View>
             ))}
           </View>
