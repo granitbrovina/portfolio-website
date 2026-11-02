@@ -10,6 +10,15 @@ const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-disp
 const body = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body", display: "swap" });
 const mono = IBM_Plex_Mono({ subsets: ["latin"], weight: ["400", "500"], variable: "--font-mono", display: "swap" });
 
+/** A bad value in the Website field must never break rendering of every page. */
+function safeUrl(value: string): URL | undefined {
+  try {
+    return value ? new URL(value) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const { content } = await getContent();
   const b = content.basics;
@@ -19,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
-    metadataBase: b.website ? new URL(b.website) : undefined,
+    metadataBase: safeUrl(b.website),
     openGraph: {
       title,
       description,

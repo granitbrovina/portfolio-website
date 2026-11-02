@@ -12,6 +12,18 @@ import { z } from "zod";
 const id = () => z.string().default(() => Math.random().toString(36).slice(2, 10));
 const variants = z.array(z.string()).default([]);
 
+/**
+ * A link field. "granitbrovina.com" or "www.linkedin.com/in/x" become https:// URLs, so links
+ * on the site and resume work and nothing downstream (e.g. metadataBase) gets an invalid URL.
+ */
+export function normalizeUrl(value: string): string {
+  const t = value.trim();
+  if (!t) return "";
+  if (/^[a-z][a-z0-9+.-]*:/i.test(t)) return t; // already has a scheme (https:, mailto:, …)
+  return `https://${t.replace(/^\/+/, "")}`;
+}
+const webUrl = () => z.string().default("").transform(normalizeUrl);
+
 export const BulletSchema = z.object({
   id: id(),
   text: z.string().default(""),
@@ -36,7 +48,7 @@ export const ProjectSchema = z.object({
   kind: z.string().default(""),
   description: z.string().default(""),
   tags: z.array(z.string()).default([]),
-  url: z.string().default(""),
+  url: webUrl(),
   showOnSite: z.boolean().default(true),
   showOnResume: z.boolean().default(true),
   variants,
@@ -64,7 +76,7 @@ export const CertificationSchema = z.object({
   name: z.string().default(""),
   issuer: z.string().default(""),
   date: z.string().default(""),
-  url: z.string().default(""),
+  url: webUrl(),
 });
 
 export const LanguageSchema = z.object({
@@ -115,9 +127,9 @@ export const BasicsSchema = z.object({
   availability: z.string().default(""),
   email: z.string().default(""),
   phone: z.string().default(""), // printed on resumes only, never on the site
-  linkedin: z.string().default(""),
-  github: z.string().default(""),
-  website: z.string().default(""),
+  linkedin: webUrl(),
+  github: webUrl(),
+  website: webUrl(),
   // Profile picture as a data URL (resized in the browser on upload). Empty = no photo.
   photo: z
     .string()
