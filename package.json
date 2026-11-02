@@ -1,0 +1,33 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal portfolio with a hidden Google-authenticated admin panel, resume PDF import and resume generation.",
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@neondatabase/serverless": "^1.0.0",
+    "@react-pdf/renderer": "^4.3.0",
+    "@vercel/blob": "^1.0.0",
+    "next": "^15.3.3",
+    "next-auth": "5.0.0-beta.25",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
