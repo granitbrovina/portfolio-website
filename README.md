@@ -8,7 +8,7 @@ A personal portfolio you edit from the browser. Source for [granitbrovina.com](h
 - **Import a resume PDF.** Claude reads it and proposes updates; you pick what to apply.
 - **Generate resume PDFs** from the site content, with variants (e.g. data, support, IT) that each get their own headline and a subset of bullets and projects.
 
-Built with Next.js, Auth.js (Google), Neon Postgres, Vercel Blob, the Anthropic API and react-pdf. MIT licensed. Fork it and make it yours.
+Built with Next.js, Auth.js (Google), Neon Postgres, the Anthropic API and react-pdf. MIT licensed. Fork it and make it yours.
 
 ## Deploy your own (about 20 minutes)
 
@@ -17,12 +17,11 @@ You need accounts on GitHub, Vercel and Google Cloud. An Anthropic API key is op
 1. **Fork** this repo, then edit `src/lib/seed.ts` with your own details (or skip this and import your resume later).
 2. **Create the project on Vercel:** *Add New → Project*, import your fork. The first build works without any settings.
 3. **Add a database:** in the project, *Storage → Create Database → Neon* (free plan). Connect it with the env prefix `DATABASE` so Vercel sets `DATABASE_URL`. Tables are created automatically on first use.
-4. **Optional, Blob storage:** *Storage → Create → Blob*. Keeps a copy of every PDF you import.
-5. **Google sign-in:** in [Google Cloud console](https://console.cloud.google.com) → *Google Auth Platform*:
+4. **Google sign-in:** in [Google Cloud console](https://console.cloud.google.com) → *Google Auth Platform*:
    - Set up branding, audience **External**, and leave it in **Testing**. Under *Audience → Test users*, add your Gmail address.
    - *Clients → Create client → Web application*. Add redirect URIs:
      `https://YOUR-DOMAIN/api/auth/callback/google`, your `*.vercel.app` URL with the same path, and `http://localhost:3000/api/auth/callback/google`.
-6. **Environment variables** (*Settings → Environment Variables*, see `.env.example`):
+5. **Environment variables** (*Settings → Environment Variables*, see `.env.example`):
 
    | Name | Value |
    | --- | --- |
@@ -32,8 +31,8 @@ You need accounts on GitHub, Vercel and Google Cloud. An Anthropic API key is op
    | `ADMIN_QUERY_KEY` / `ADMIN_QUERY_VALUE` | e.g. `sso` and a long random string |
    | `ANTHROPIC_API_KEY` | optional, enables PDF import |
 
-7. **Redeploy** (*Deployments → ⋯ → Redeploy*). Visit `https://YOUR-DOMAIN/?sso=YOUR-VALUE`, sign in, and press **Save & publish** once to store your content.
-8. **Custom domain:** *Settings → Domains → Add*, then create the DNS records Vercel shows at your registrar. Leave existing MX/TXT records alone if you use email on the domain.
+6. **Redeploy** (*Deployments → ⋯ → Redeploy*). Visit `https://YOUR-DOMAIN/?sso=YOUR-VALUE`, sign in, and press **Save & publish** once to store your content.
+7. **Custom domain:** *Settings → Domains → Add*, then create the DNS records Vercel shows at your registrar. Leave existing MX/TXT records alone if you use email on the domain.
 
 ## How access works
 

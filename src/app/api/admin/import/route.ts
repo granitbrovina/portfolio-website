@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { put } from "@vercel/blob";
 import { requireAdmin } from "@/auth";
 import { ContentSchema } from "@/lib/schema";
 
@@ -51,19 +50,6 @@ export async function POST(req: Request) {
   const bytes = Buffer.from(await file.arrayBuffer());
   if (bytes.subarray(0, 5).toString("latin1") !== "%PDF-") {
     return NextResponse.json({ error: "That file isn't a valid PDF." }, { status: 415 });
-  }
-
-  // Keep a copy of the uploaded original when Blob storage is connected.
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
-    try {
-      await put(`resume-imports/${Date.now()}.pdf`, bytes, {
-        access: "public",
-        addRandomSuffix: true,
-        contentType: "application/pdf",
-      });
-    } catch (err) {
-      console.error("Could not store the uploaded PDF in Blob storage.", err);
-    }
   }
 
   let text = "";
