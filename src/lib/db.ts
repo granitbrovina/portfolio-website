@@ -10,11 +10,9 @@ let schemaReady: Promise<void> | null = null;
 /** Cache tag for the site content. Saving calls revalidateTag(CONTENT_TAG). */
 export const CONTENT_TAG = "site-content";
 
-// Neon queries run over fetch(). They must never land in Next's fetch Data Cache on their own,
-// where an old copy can outlive revalidatePath; caching happens only through cachedContent below.
 function connection(): Sql | null {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  return url ? neon(url, { fetchOptions: { cache: "no-store" } }) : null;
+  return url ? neon(url) : null;
 }
 
 /** Creates the two tables on first use, so a fresh deploy needs no migration step. */
