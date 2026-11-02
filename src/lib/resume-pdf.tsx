@@ -10,25 +10,25 @@ import { parseLinks } from "./richtext";
 Font.registerHyphenationCallback((word) => [word]);
 
 const s = StyleSheet.create({
-  page: { paddingTop: 40, paddingBottom: 44, paddingHorizontal: 48, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.4, color: "#1b1f1d" },
+  page: { paddingTop: 34, paddingBottom: 34, paddingHorizontal: 46, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.33, color: "#1b1f1d" },
   name: { fontFamily: "Helvetica-Bold", fontSize: 20, lineHeight: 1.2, marginBottom: 4 },
   headline: { fontSize: 10.5, lineHeight: 1.35, color: "#1d5c86", marginBottom: 6 },
   contact: { fontSize: 9, color: "#4a524e", flexDirection: "row", flexWrap: "wrap" },
   contactItem: { marginRight: 10 },
   link: { color: "#4a524e", textDecoration: "none" },
   inlineLink: { color: "#1b1f1d", textDecoration: "none" },
-  section: { marginTop: 14 },
-  sectionTitle: { fontFamily: "Helvetica-Bold", fontSize: 9.5, letterSpacing: 1, textTransform: "uppercase", color: "#1d5c86", borderBottomWidth: 0.75, borderBottomColor: "#c9d0cb", paddingBottom: 3, marginBottom: 6 },
+  section: { marginTop: 11 },
+  sectionTitle: { fontFamily: "Helvetica-Bold", fontSize: 9.5, letterSpacing: 1, textTransform: "uppercase", color: "#1d5c86", borderBottomWidth: 0.75, borderBottomColor: "#c9d0cb", paddingBottom: 2.5, marginBottom: 5 },
   summary: { fontSize: 10 },
-  entry: { marginBottom: 8 },
+  entry: { marginBottom: 6 },
   entryHead: { flexDirection: "row", justifyContent: "space-between" },
   entryTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5, lineHeight: 1.35 },
   entryDate: { fontSize: 9, color: "#4a524e" },
   entrySub: { fontSize: 9.5, color: "#4a524e", marginBottom: 2 },
-  bulletRow: { flexDirection: "row", marginTop: 1.5 },
+  bulletRow: { flexDirection: "row", marginTop: 1 },
   bulletDot: { width: 10 },
   bulletText: { flex: 1 },
-  skillRow: { flexDirection: "row", marginBottom: 2 },
+  skillRow: { flexDirection: "row", marginBottom: 1.5 },
   skillGroup: { fontFamily: "Helvetica-Bold", width: 120 },
   skillItems: { flex: 1 },
 });
@@ -150,6 +150,11 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
                 <Text style={s.entrySub}>{[e.institution, e.location, e.note].filter(Boolean).join(" · ")}</Text>
               </View>
             ))}
+            {content.languages.length > 0 ? (
+              <Text style={s.entrySub}>
+                Languages: {content.languages.map((l) => (l.level ? `${l.name} (${l.level})` : l.name)).join(", ")}
+              </Text>
+            ) : null}
           </View>
         )}
 
@@ -162,12 +167,6 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
           </View>
         )}
 
-        {content.languages.length > 0 && (
-          <View style={s.section}>
-            <Text style={s.sectionTitle}>Languages</Text>
-            <Text>{content.languages.map((l) => (l.level ? `${l.name} (${l.level})` : l.name)).join(", ")}</Text>
-          </View>
-        )}
       </Page>
     </Document>
   );
