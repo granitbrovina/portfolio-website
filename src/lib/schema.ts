@@ -99,8 +99,25 @@ export const BasicsSchema = z.object({
   website: z.string().default(""),
 });
 
+const HEX = /^#[0-9a-f]{3}([0-9a-f]{3})?$/i;
+const ICON_DATA_URL = /^data:image\/(png|svg\+xml|x-icon|vnd\.microsoft\.icon|jpeg|webp);base64,[A-Za-z0-9+/=]+$/;
+export const MAX_ICON_DATA_URL = 220_000; // ~160 KB file
+
+export const BrandingSchema = z.object({
+  faviconMode: z.enum(["monogram", "image"]).default("monogram"),
+  monogramText: z.string().default("").transform((v) => v.trim().slice(0, 3)),
+  monogramBg: z.string().default("#1d5c86").transform((v) => (HEX.test(v) ? v : "#1d5c86")),
+  monogramFg: z.string().default("#ffffff").transform((v) => (HEX.test(v) ? v : "#ffffff")),
+  // Uploaded icon stored as a data URL. Anything else is dropped.
+  faviconImage: z
+    .string()
+    .default("")
+    .transform((v) => (v.length <= MAX_ICON_DATA_URL && ICON_DATA_URL.test(v) ? v : "")),
+});
+
 export const ContentSchema = z.object({
   basics: BasicsSchema.default({}),
+  branding: BrandingSchema.default({}),
   focusAreas: z.array(FocusAreaSchema).default([]),
   experience: z.array(ExperienceSchema).default([]),
   projects: z.array(ProjectSchema).default([]),
@@ -127,6 +144,7 @@ export type Certification = z.infer<typeof CertificationSchema>;
 export type Language = z.infer<typeof LanguageSchema>;
 export type FocusArea = z.infer<typeof FocusAreaSchema>;
 export type Variant = z.infer<typeof VariantSchema>;
+export type Branding = z.infer<typeof BrandingSchema>;
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10);
@@ -143,4 +161,22 @@ export function dateRange(start: string, end: string): string {
   if (!start && !end) return "";
   if (!start) return end || "Present";
   return `${start} – ${end || "Present"}`;
+}
+
+/** "Ada Lovelace" → "AL" */
+export function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0]!.toUpperCase())
+    .join("");
+}
+
+/** Short stable hash of the icon settings, used to bust browser favicon caches after a change. */
+export function faviconVersion(content: Content): string {
+  const src = JSON.stringify([content.branding, content.basics.name]);
+  let h = 5381;
+  for (let i = 0; i < src.length; i++) h = ((h << 5) + h + src.charCodeAt(i)) | 0;
+  return (h >>> 0).toString(36);
 }

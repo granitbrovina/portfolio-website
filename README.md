@@ -7,6 +7,7 @@ A personal portfolio you edit from the browser. Source for [granitbrovina.com](h
 - **Edit everything** in forms: profile, experience, projects, skills, education. Saving publishes immediately and keeps a version history.
 - **Import a resume PDF.** Claude reads it and proposes updates; you pick what to apply.
 - **Generate resume PDFs** from the site content, with variants (e.g. data, support, IT) that each get their own headline and a subset of bullets and projects.
+- **Site icon** as generated initials or an uploaded image, and **JSON export/import** for backups.
 
 Built with Next.js, Auth.js (Google), Neon Postgres, the Anthropic API and react-pdf. MIT licensed. Fork it and make it yours.
 
@@ -14,7 +15,7 @@ Built with Next.js, Auth.js (Google), Neon Postgres, the Anthropic API and react
 
 You need accounts on GitHub, Vercel and Google Cloud. An Anthropic API key is optional (it powers PDF import).
 
-1. **Fork** this repo, then edit `src/lib/seed.ts` with your own details (or skip this and import your resume later).
+1. **Fork** this repo. A fresh deploy shows placeholder content from `src/lib/seed.ts` until you save your own from the admin panel (or import your resume PDF).
 2. **Create the project on Vercel:** *Add New → Project*, import your fork. The first build works without any settings.
 3. **Add a database:** in the project, *Storage → Create Database → Neon* (free plan). Connect it with the env prefix `DATABASE` so Vercel sets `DATABASE_URL`. Tables are created automatically on first use.
 4. **Google sign-in:** in [Google Cloud console](https://console.cloud.google.com) → *Google Auth Platform*:
@@ -52,12 +53,12 @@ Without `DATABASE_URL` the site serves the seed content and the admin panel is r
 
 ```
 src/lib/schema.ts       content schema (zod) shared by everything
-src/lib/seed.ts         starting content
+src/lib/seed.ts         placeholder content for new deploys
 src/lib/db.ts           Postgres storage + version history
 src/lib/resume-pdf.tsx  resume PDF template
 src/middleware.ts       hidden admin URL
 src/auth.ts             Google sign-in + admin allowlist
 src/app/page.tsx        public site
 src/app/admin/          admin panel
-src/app/api/            content, history, import and resume endpoints
+src/app/api/            content, history, import, resume and favicon endpoints
 ```

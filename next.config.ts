@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       "./node_modules/@react-pdf/font/**/*",
     ],
   },
+  // Browsers ask for /favicon.ico on their own; answer with the configurable icon.
+  async rewrites() {
+    return [{ source: "/favicon.ico", destination: "/api/favicon" }];
+  },
   eslint: { ignoreDuringBuilds: true },
 };
 

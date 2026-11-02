@@ -7,6 +7,7 @@ import { Field, ItemTools, VariantChips, formatDate, move, type Update } from ".
 import ImportPanel from "./ImportPanel";
 import ResumePanel from "./ResumePanel";
 import HistoryPanel from "./HistoryPanel";
+import IconEditor from "./IconEditor";
 
 type Tab = "profile" | "experience" | "projects" | "skills" | "education" | "resume" | "import" | "history";
 
@@ -18,7 +19,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "education", label: "Education" },
   { id: "resume", label: "Resume" },
   { id: "import", label: "Import PDF" },
-  { id: "history", label: "History" },
+  { id: "history", label: "History & backup" },
 ];
 
 export default function Editor(props: {
@@ -162,9 +163,15 @@ export default function Editor(props: {
           )}
           {tab === "history" && (
             <HistoryPanel
-              onLoad={(c) => {
+              content={content}
+              onLoad={(c, source) => {
                 replaceContent(c);
-                setStatus({ kind: "idle", text: "Older version loaded. Save & publish to restore it." });
+                setStatus({
+                  kind: "idle",
+                  text: source === "file"
+                    ? "Backup loaded. Save & publish to make it live."
+                    : "Older version loaded. Save & publish to restore it.",
+                });
               }}
             />
           )}
@@ -229,6 +236,9 @@ function ProfilePanel({ content, update }: PanelProps) {
           </div>
         ))}
       </div>
+
+      <SectionHead title="Site icon" intro="The small icon shown in browser tabs, bookmarks and on phone home screens." />
+      <IconEditor content={content} update={update} />
     </section>
   );
 }

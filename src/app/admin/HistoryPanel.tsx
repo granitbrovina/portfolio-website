@@ -1,12 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Content } from "@/lib/schema";
+import { ContentSchema, type Content } from "@/lib/schema";
 import { formatDate } from "./ui";
 
 type Version = { id: number; note: string; createdAt: string };
 
-export default function HistoryPanel({ onLoad }: { onLoad: (c: Content) => void }) {
+export default function HistoryPanel({
+  content,
+  onLoad,
+}: {
+  content: Content;
+  onLoad: (c: Content, source: "history" | "file") => void;
+}) {
   const [versions, setVersions] = useState<Version[] | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState<number | null>(null);
@@ -28,7 +34,7 @@ export default function HistoryPanel({ onLoad }: { onLoad: (c: Content) => void 
       const r = await fetch(`/api/admin/history?id=${id}`);
       const d = (await r.json()) as { content?: Content; error?: string };
       if (!r.ok || !d.content) throw new Error(d.error || "Could not load that version.");
-      onLoad(d.content);
+      onLoad(d.content, "history");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not load that version.");
     } finally {
@@ -36,8 +42,48 @@ export default function HistoryPanel({ onLoad }: { onLoad: (c: Content) => void 
     }
   }
 
+  function exportJson() {
+    const blob = new Blob([JSON.stringify(content, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const day = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `portfolio-content-${day}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  async function importJson(file: File | undefined) {
+    setError("");
+    if (!file) return;
+    try {
+      const parsed = ContentSchema.safeParse(JSON.parse(await file.text()));
+      if (!parsed.success) throw new Error("That file isn't a portfolio backup.");
+      onLoad(parsed.data, "file");
+    } catch (e) {
+      setError(e instanceof Error && e.message.includes("backup") ? e.message : "That file isn't valid JSON.");
+    }
+  }
+
   return (
     <section className="adm-panel">
+      <div className="adm-section-head">
+        <div>
+          <h2>Backup</h2>
+          <p className="adm-muted">
+            Download everything in the editor as a JSON file, or load a backup back in. Loading only fills the editor;
+            the site changes when you save.
+          </p>
+        </div>
+      </div>
+      <div className="adm-row">
+        <button type="button" className="adm-btn primary" onClick={exportJson}>Export JSON</button>
+        <label className="adm-field inline" htmlFor="backup-file">
+          <span className="adm-label">Load a backup</span>
+          <input id="backup-file" type="file" accept="application/json,.json" onChange={(e) => { importJson(e.target.files?.[0]); e.target.value = ""; }} />
+        </label>
+      </div>
+
       <div className="adm-section-head">
         <div>
           <h2>History</h2>

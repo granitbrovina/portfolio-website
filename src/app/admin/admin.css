@@ -111,6 +111,13 @@
 .adm-history li { display: flex; justify-content: space-between; gap: 12px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; }
 .adm-pill { margin-left: 8px; font: 500 0.7rem/1 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--ok); }
 
+.adm-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.adm-color { width: 64px; height: 36px; padding: 2px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); cursor: pointer; }
+.adm-favicon-row { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; }
+.adm-favicon-previews { display: flex; gap: 14px; align-items: flex-end; padding: 12px 16px; border: 1px dashed var(--line); border-radius: 8px; background: var(--bg); }
+.adm-favicon-mono { display: inline-flex; align-items: center; justify-content: center; font-family: var(--body); font-weight: 700; line-height: 1; letter-spacing: -0.02em; flex: none; }
+.adm-favicon-img { object-fit: contain; flex: none; }
+
 /* sign-in gate */
 .adm-gate {
   min-height: 100vh; display: grid; place-items: center; background: var(--bg);
@@ -126,7 +133,7 @@
   .adm-layout { grid-template-columns: 1fr; gap: 16px; }
   .adm-tabs { position: static; flex-direction: row; flex-wrap: wrap; }
   .adm-tabs-foot { width: 100%; grid-auto-flow: column; justify-content: start; align-items: center; margin-top: 8px; padding-top: 8px; }
-  .adm-grid.two, .adm-grid.skill, .adm-review-cols { grid-template-columns: 1fr; }
+  .adm-grid.two, .adm-grid.three, .adm-grid.skill, .adm-review-cols { grid-template-columns: 1fr; }
   .adm-bullet { grid-template-columns: 1fr; }
   .adm-bullet-side { justify-items: start; max-width: none; }
   .adm-tools { position: static; }
