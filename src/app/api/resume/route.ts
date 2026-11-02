@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/auth";
 import { getContent } from "@/lib/db";
 import { renderResumePdf } from "@/lib/resume-pdf";
-import { ContentSchema } from "@/lib/schema";
+import { ALL_VARIANTS, ContentSchema } from "@/lib/schema";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,7 +12,7 @@ function pdfResponse(buf: Buffer, filename: string, inline: boolean, cacheable =
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": `${inline ? "inline" : "attachment"}; filename="${filename}"`,
-      "Cache-Control": cacheable ? "public, max-age=0, s-maxage=300" : "private, no-store",
+      "Cache-Control": cacheable ? "public, max-age=0, s-maxage=60" : "private, no-store",
     },
   });
 }
@@ -27,14 +27,18 @@ function fileName(name: string, label: string): string {
  * printed from the latest saved content. The signed-in admin can fetch any variant.
  */
 export async function GET(req: Request) {
-  const variant = new URL(req.url).searchParams.get("variant") || "";
+  const requested = new URL(req.url).searchParams.get("variant") || "";
   const { content } = await getContent();
-  const isPublic = variant && variant === content.resume.publicVariant;
+  const pub = content.resume.publicVariant;
+  // "all" asks for the unfiltered resume; it is public only when the admin chose "Everything".
+  const isAll = requested === "all";
+  const isPublic = Boolean(requested) && (isAll ? pub === ALL_VARIANTS : requested === pub);
   if (!isPublic && !(await requireAdmin())) {
     return NextResponse.json({ error: "Not found." }, { status: 404 });
   }
+  const variant = isAll ? null : requested || null;
   const label = content.resume.variants.find((v) => v.id === variant)?.label ?? "";
-  const buf = await renderResumePdf(content, variant || null);
+  const buf = await renderResumePdf(content, variant);
   return pdfResponse(buf, fileName(content.basics.name, label), true, Boolean(isPublic));
 }
 

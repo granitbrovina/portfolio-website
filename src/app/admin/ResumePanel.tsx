@@ -120,6 +120,7 @@ export default function ResumePanel({ content, update }: { content: Content; upd
           onChange={(e) => update((d) => { d.resume.publicVariant = e.target.value; })}
         >
           <option value="">No public download</option>
+          <option value="*">Everything (no filtering)</option>
           {variants.map((v) => <option key={v.id} value={v.id}>{v.label || v.id}</option>)}
         </select>
       </label>

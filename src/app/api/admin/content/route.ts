@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/auth";
-import { getContent, saveContent } from "@/lib/db";
+import { CONTENT_TAG, getContent, saveContent } from "@/lib/db";
 import { ContentSchema } from "@/lib/schema";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +34,8 @@ export async function PUT(req: Request) {
   try {
     const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 200) : "Saved from admin";
     const updatedAt = await saveContent(parsed.data, note);
-    revalidatePath("/");
+    revalidateTag(CONTENT_TAG);
+    revalidatePath("/", "layout");
     return NextResponse.json({ ok: true, updatedAt });
   } catch (err) {
     return NextResponse.json({ error: err instanceof Error ? err.message : "Save failed." }, { status: 500 });

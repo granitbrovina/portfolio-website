@@ -162,7 +162,7 @@ export const ContentSchema = z.object({
   resume: z
     .object({
       variants: z.array(VariantSchema).default([]),
-      publicVariant: z.string().default(""), // "" = no public download button
+      publicVariant: z.string().default(""), // "" = no public download button, ALL_VARIANTS = unfiltered
     })
     .default({}),
 });
@@ -186,6 +186,9 @@ export function newId(): string {
 }
 
 /** True when an item with these variant tags belongs in the given variant. */
+/** Stored as resume.publicVariant to offer the unfiltered resume on the site. */
+export const ALL_VARIANTS = "*";
+
 export function inVariant(itemVariants: string[], variant: string | null): boolean {
   if (!variant) return true;
   return itemVariants.length === 0 || itemVariants.includes(variant);

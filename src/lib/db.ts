@@ -6,9 +6,19 @@ type Sql = ReturnType<typeof neon>;
 
 let schemaReady: Promise<void> | null = null;
 
-function connection(): Sql | null {
+/** Cache tag for every read of the site content. Saving calls revalidateTag(CONTENT_TAG). */
+export const CONTENT_TAG = "site-content";
+
+/**
+ * Neon talks to Postgres over fetch(), and Next.js caches fetch responses in its Data Cache.
+ * Reads of the site content are tagged so a save can invalidate them everywhere at once
+ * (homepage, layout metadata, favicon, photo, resume). Everything else skips the cache.
+ */
+function connection(mode: "content" | "fresh" = "fresh"): Sql | null {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  return url ? neon(url) : null;
+  if (!url) return null;
+  const fetchOptions = (mode === "content" ? { next: { tags: [CONTENT_TAG] } } : { cache: "no-store" }) as RequestInit;
+  return neon(url, { fetchOptions });
 }
 
 /** Creates the two tables on first use, so a fresh deploy needs no migration step. */
@@ -40,7 +50,7 @@ export function hasDatabase(): boolean {
 
 /** Current site content. Falls back to the seed if the database is missing, empty or unreachable. */
 export async function getContent(): Promise<{ content: Content; updatedAt: string | null; source: "db" | "seed" }> {
-  const sql = connection();
+  const sql = connection("content");
   if (!sql) return { content: seedContent, updatedAt: null, source: "seed" };
   try {
     await ensureSchema(sql);

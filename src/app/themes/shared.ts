@@ -1,4 +1,4 @@
-import { photoVersion, type Content, type Experience } from "@/lib/schema";
+import { ALL_VARIANTS, photoVersion, type Content, type Experience } from "@/lib/schema";
 
 /** Everything a theme needs, worked out once from the saved content. */
 export function prepare(content: Content) {
@@ -15,7 +15,9 @@ export function prepare(content: Content) {
 
   return {
     shownProjects: projects.filter((p) => p.showOnSite),
-    resumeHref: publicVariant ? `/api/resume?variant=${encodeURIComponent(publicVariant.id)}` : null,
+    resumeHref: resume.publicVariant === ALL_VARIANTS
+      ? "/api/resume?variant=all"
+      : publicVariant ? `/api/resume?variant=${encodeURIComponent(publicVariant.id)}` : null,
     photoUrl: basics.photo ? `/api/photo?v=${photoVersion(content)}` : null,
     photoAlt: basics.name ? `Photo of ${basics.name}` : "Profile photo",
     year: new Date().getFullYear(),
