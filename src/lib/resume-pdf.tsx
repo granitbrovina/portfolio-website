@@ -1,4 +1,4 @@
-import { Document, Link, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
+import { Document, Font, Link, Page, StyleSheet, Text, View, renderToBuffer } from "@react-pdf/renderer";
 import { dateRange, inVariant, type Content } from "./schema";
 import { parseLinks } from "./richtext";
 
@@ -6,6 +6,9 @@ import { parseLinks } from "./richtext";
  * One-column, text-first layout so applicant tracking systems can read it.
  * Uses the built-in Helvetica family, so no font files are needed.
  */
+// Never split words across lines ("Work-/space"): wrap whole words only.
+Font.registerHyphenationCallback((word) => [word]);
+
 const s = StyleSheet.create({
   page: { paddingTop: 40, paddingBottom: 44, paddingHorizontal: 48, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.4, color: "#1b1f1d" },
   name: { fontFamily: "Helvetica-Bold", fontSize: 20, lineHeight: 1.2, marginBottom: 4 },
@@ -59,7 +62,7 @@ function ResumeDocument({ content, variantId }: { content: Content; variantId: s
   const experience = content.experience
     .filter((e) => inVariant(e.variants, variantId))
     .map((e) => ({ ...e, bullets: e.bullets.filter((b) => b.text.trim() && inVariant(b.variants, variantId)) }));
-  const projects = content.projects.filter((p) => inVariant(p.variants, variantId));
+  const projects = content.projects.filter((p) => p.showOnResume && inVariant(p.variants, variantId));
   const skills = content.skills.filter((sk) => sk.items.trim() && inVariant(sk.variants, variantId));
 
   const contacts: { label: string; href?: string }[] = [];

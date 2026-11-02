@@ -310,7 +310,7 @@ function ProjectsPanel({ content, update }: PanelProps) {
         title="Projects"
         intro="Shown as cards on the site and as a projects section on resumes."
         addLabel="Add project"
-        onAdd={() => update((d) => { d.projects.unshift({ id: newId(), name: "", kind: "", description: "", tags: [], url: "", showOnSite: true, variants: [] }); })}
+        onAdd={() => update((d) => { d.projects.unshift({ id: newId(), name: "", kind: "", description: "", tags: [], url: "", showOnSite: true, showOnResume: true, variants: [] }); })}
       />
       <div className="adm-list">
         {content.projects.map((p, i) => (
@@ -328,6 +328,10 @@ function ProjectsPanel({ content, update }: PanelProps) {
             <label className="adm-check" htmlFor={`p-${p.id}-show`}>
               <input id={`p-${p.id}-show`} type="checkbox" checked={p.showOnSite} onChange={(e) => update((d) => { d.projects[i].showOnSite = e.target.checked; })} />
               Show on the site
+            </label>
+            <label className="adm-check" htmlFor={`p-${p.id}-resume`}>
+              <input id={`p-${p.id}-resume`} type="checkbox" checked={p.showOnResume} onChange={(e) => update((d) => { d.projects[i].showOnResume = e.target.checked; })} />
+              Include on resumes
             </label>
             <VariantChips variants={variants} value={p.variants} onChange={(v) => update((d) => { d.projects[i].variants = v; })} />
           </div>

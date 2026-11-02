@@ -38,6 +38,7 @@ export const ProjectSchema = z.object({
   tags: z.array(z.string()).default([]),
   url: z.string().default(""),
   showOnSite: z.boolean().default(true),
+  showOnResume: z.boolean().default(true),
   variants,
 });
 
