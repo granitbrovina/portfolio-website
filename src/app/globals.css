@@ -73,16 +73,13 @@ h1 { font: 700 clamp(2.4rem, 6vw, 3.6rem)/1.02 var(--display); letter-spacing: -
 .btn.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 .btn:hover { border-color: var(--fg); }
 
-/* parse card */
-.parse { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font: 400 0.78rem/1.55 var(--mono); overflow: hidden; }
-.parse header { display: flex; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; }
-.raw { padding: 14px; color: var(--muted); overflow-x: auto; white-space: pre; border-bottom: 1px dashed var(--line); margin: 0; font: inherit; }
-.raw b { color: var(--fg); font-weight: 500; }
-.arrow { padding: 6px 14px; color: var(--accent); font-size: 0.72rem; letter-spacing: 0.04em; border-bottom: 1px dashed var(--line); }
-.parsed { padding: 10px 14px 14px; display: grid; grid-template-columns: auto 1fr; gap: 3px 16px; margin: 0; }
-.parsed dt { color: var(--muted); }
-.parsed dd { margin: 0; color: var(--fg); overflow-wrap: anywhere; }
-.parsed dd.flag { color: var(--accent); }
+/* portrait */
+.hero.no-photo { grid-template-columns: 1fr; }
+.hero.no-photo h1 { max-width: 16ch; }
+.portrait {
+  justify-self: end; width: 100%; max-width: 340px; height: auto; aspect-ratio: 4 / 5;
+  object-fit: cover; border-radius: 10px; border: 1px solid var(--line); background: var(--surface);
+}
 
 /* sections */
 .section { border-top: 1px solid var(--line); padding-block: 56px; }
@@ -128,7 +125,8 @@ ul.points li::marker { color: var(--accent); }
 .footer-meta { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
 @media (max-width: 760px) {
-  .hero { grid-template-columns: 1fr; gap: 36px; padding-block: 28px 48px; }
+  .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 28px 48px; }
+  .portrait { order: -1; justify-self: start; max-width: 180px; }
   .sec-head { grid-template-columns: 1fr; gap: 16px; }
   .projects, .skills { grid-template-columns: 1fr; }
   .nav ul { gap: 16px; }

@@ -8,6 +8,7 @@ import ImportPanel from "./ImportPanel";
 import ResumePanel from "./ResumePanel";
 import HistoryPanel from "./HistoryPanel";
 import IconEditor from "./IconEditor";
+import PhotoEditor from "./PhotoEditor";
 
 type Tab = "profile" | "experience" | "projects" | "skills" | "education" | "resume" | "import" | "history";
 
@@ -239,6 +240,9 @@ function ProfilePanel({ content, update }: PanelProps) {
           </div>
         ))}
       </div>
+
+      <SectionHead title="Profile picture" intro="Optional. Shown at the top of the site, next to your headline." />
+      <PhotoEditor content={content} update={update} />
 
       <SectionHead title="Site icon" intro="The small icon shown in browser tabs, bookmarks and on phone home screens." />
       <IconEditor content={content} update={update} />

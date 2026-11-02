@@ -85,6 +85,9 @@ export const VariantSchema = z.object({
   summary: z.string().default(""),
 });
 
+const PHOTO_DATA_URL = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+export const MAX_PHOTO_DATA_URL = 900_000; // ~650 KB image; uploads are resized well below this
+
 export const BasicsSchema = z.object({
   name: z.string().default(""),
   headline: z.string().default(""), // short role line, e.g. "Data & Support Engineer"
@@ -97,6 +100,11 @@ export const BasicsSchema = z.object({
   linkedin: z.string().default(""),
   github: z.string().default(""),
   website: z.string().default(""),
+  // Profile picture as a data URL (resized in the browser on upload). Empty = no photo.
+  photo: z
+    .string()
+    .default("")
+    .transform((v) => (v.length <= MAX_PHOTO_DATA_URL && PHOTO_DATA_URL.test(v) ? v : "")),
   // Small line at the bottom of the site. Supports [text](url) links. Empty hides it.
   footerNote: z
     .string()
@@ -180,9 +188,17 @@ export function initials(name: string): string {
 }
 
 /** Short stable hash of the icon settings, used to bust browser favicon caches after a change. */
-export function faviconVersion(content: Content): string {
-  const src = JSON.stringify([content.branding, content.basics.name]);
+export function hashString(src: string): string {
   let h = 5381;
   for (let i = 0; i < src.length; i++) h = ((h << 5) + h + src.charCodeAt(i)) | 0;
   return (h >>> 0).toString(36);
+}
+
+export function faviconVersion(content: Content): string {
+  return hashString(JSON.stringify([content.branding, content.basics.name]));
+}
+
+/** Changes whenever the photo changes, so its URL can be cached for a long time. */
+export function photoVersion(content: Content): string {
+  return hashString(content.basics.photo);
 }

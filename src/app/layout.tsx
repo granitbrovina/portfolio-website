@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Bricolage_Grotesque, IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
 import { getContent } from "@/lib/db";
-import { faviconVersion } from "@/lib/schema";
+import { faviconVersion, photoVersion } from "@/lib/schema";
 import { stripLinks } from "@/lib/richtext";
 import "./globals.css";
 
@@ -20,7 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     metadataBase: b.website ? new URL(b.website) : undefined,
-    openGraph: { title, description, type: "profile", url: b.website || undefined },
+    openGraph: {
+      title,
+      description,
+      type: "profile",
+      url: b.website || undefined,
+      images: b.photo ? [{ url: `/api/photo?v=${photoVersion(content)}`, width: 640, height: 800 }] : undefined,
+    },
     icons: {
       icon: `/api/favicon?size=64&v=${v}`,
       apple: `/api/favicon?size=180&v=${v}`,

@@ -1,5 +1,5 @@
 import { getContent } from "@/lib/db";
-import { dateRange } from "@/lib/schema";
+import { dateRange, photoVersion } from "@/lib/schema";
 import CopyEmail from "./CopyEmail";
 import RichText from "./RichText";
 
@@ -33,7 +33,7 @@ export default async function Home() {
         </ul>
       </nav>
 
-      <header className="hero" id="top">
+      <header className={basics.photo ? "hero" : "hero no-photo"} id="top">
         <div>
           {basics.availability && <div className="status">{basics.availability}</div>}
           <h1>{basics.heroTitle || basics.headline || basics.name}</h1>
@@ -47,7 +47,16 @@ export default async function Home() {
             )}
           </div>
         </div>
-        <ParseCard />
+        {basics.photo && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="portrait"
+            src={`/api/photo?v=${photoVersion(content)}`}
+            alt={basics.name ? `Photo of ${basics.name}` : "Profile photo"}
+            width={640}
+            height={800}
+          />
+        )}
       </header>
 
       {focusAreas.length > 0 && (
@@ -178,23 +187,6 @@ export default async function Home() {
           <span>{basics.location}</span>
         </div>
       </footer>
-    </div>
-  );
-}
-
-function ParseCard() {
-  return (
-    <div className="parse" aria-label="Example: a raw device log line parsed into a structured record">
-      <header><span>device.log</span><span>example</span></header>
-      <pre className="raw">{"2026-10-28T09:14:07Z "}<b>WARN</b>{" dev=JN-6Q-0417\n  wifi rssi=-81 retry=3 cal=exchange\n  sync=timeout after 30s"}</pre>
-      <div className="arrow">↓ parsed</div>
-      <dl className="parsed">
-        <dt>device</dt><dd>JN-6Q-0417</dd>
-        <dt>level</dt><dd>WARN</dd>
-        <dt>signal</dt><dd className="flag">-81 dBm · weak</dd>
-        <dt>calendar</dt><dd>Exchange</dd>
-        <dt>likely cause</dt><dd className="flag">Wi-Fi coverage, not calendar auth</dd>
-      </dl>
     </div>
   );
 }
