@@ -7,8 +7,8 @@ import { dateRange, inVariant, type Content } from "./schema";
  */
 const s = StyleSheet.create({
   page: { paddingTop: 40, paddingBottom: 44, paddingHorizontal: 48, fontFamily: "Helvetica", fontSize: 10, lineHeight: 1.4, color: "#1b1f1d" },
-  name: { fontFamily: "Helvetica-Bold", fontSize: 20, marginBottom: 2 },
-  headline: { fontSize: 10.5, color: "#1d5c86", marginBottom: 6 },
+  name: { fontFamily: "Helvetica-Bold", fontSize: 20, lineHeight: 1.2, marginBottom: 4 },
+  headline: { fontSize: 10.5, lineHeight: 1.35, color: "#1d5c86", marginBottom: 6 },
   contact: { fontSize: 9, color: "#4a524e", flexDirection: "row", flexWrap: "wrap" },
   contactItem: { marginRight: 10 },
   link: { color: "#4a524e", textDecoration: "none" },
@@ -17,7 +17,7 @@ const s = StyleSheet.create({
   summary: { fontSize: 10 },
   entry: { marginBottom: 8 },
   entryHead: { flexDirection: "row", justifyContent: "space-between" },
-  entryTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5 },
+  entryTitle: { fontFamily: "Helvetica-Bold", fontSize: 10.5, lineHeight: 1.35 },
   entryDate: { fontSize: 9, color: "#4a524e" },
   entrySub: { fontSize: 9.5, color: "#4a524e", marginBottom: 2 },
   bulletRow: { flexDirection: "row", marginTop: 1.5 },
