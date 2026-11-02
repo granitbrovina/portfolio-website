@@ -79,6 +79,23 @@ export const FocusAreaSchema = z.object({
   body: z.string().default(""),
 });
 
+export const HighlightSchema = z.object({
+  id: id(),
+  value: z.string().default(""), // "50%+", "20→1 min"
+  label: z.string().default(""), // what the number means
+});
+
+export const THEME_IDS = ["original", "schematic", "results", "granite", "workplace", "corporate"] as const;
+export type ThemeId = (typeof THEME_IDS)[number];
+export const THEMES: { id: ThemeId; label: string; description: string; swatches: string[] }[] = [
+  { id: "original", label: "Original", description: "Calm e-paper grey with an ink-blue accent; follows the visitor's light or dark mode.", swatches: ["#F2F3EF", "#17201C", "#1D5C86"] },
+  { id: "schematic", label: "Schematic", description: "Engineering-drawing look: grid paper, wide headings, monospace sheet labels.", swatches: ["#F3F5F6", "#0F1B26", "#2448A8"] },
+  { id: "results", label: "Results-first", description: "Swiss-style typography with a huge name and your key numbers up front.", swatches: ["#FBFBF8", "#121212", "#FFD84D"] },
+  { id: "granite", label: "Granite", description: "Dark charcoal with a warm amber accent and a large portrait.", swatches: ["#12161A", "#E6E9EC", "#E9B44C"] },
+  { id: "workplace", label: "Workplace", description: "Inspired by getjoan.com: soft grey ground, white cards, geometric headings, electric-violet accent, greyscale photo.", swatches: ["#F7F7F7", "#000000", "#4205DD"] },
+  { id: "corporate", label: "Corporate Blue", description: "Inspired by na.panasonic.com: royal-blue header band, dark hero card, centred sections, navy footer.", swatches: ["#1953B4", "#FFFFFF", "#0F315F"] },
+];
+
 export const VariantSchema = z.object({
   id: z.string().min(1),
   label: z.string().default(""),
@@ -133,6 +150,8 @@ export const BrandingSchema = z.object({
 export const ContentSchema = z.object({
   basics: BasicsSchema.default({}),
   branding: BrandingSchema.default({}),
+  theme: z.enum(THEME_IDS).catch("original").default("original"),
+  highlights: z.array(HighlightSchema).default([]),
   focusAreas: z.array(FocusAreaSchema).default([]),
   experience: z.array(ExperienceSchema).default([]),
   projects: z.array(ProjectSchema).default([]),
@@ -160,6 +179,7 @@ export type Language = z.infer<typeof LanguageSchema>;
 export type FocusArea = z.infer<typeof FocusAreaSchema>;
 export type Variant = z.infer<typeof VariantSchema>;
 export type Branding = z.infer<typeof BrandingSchema>;
+export type Highlight = z.infer<typeof HighlightSchema>;
 
 export function newId(): string {
   return Math.random().toString(36).slice(2, 10);

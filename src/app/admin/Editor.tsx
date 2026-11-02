@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ContentSchema, newId, type Content } from "@/lib/schema";
+import { ContentSchema, newId, THEMES, type Content } from "@/lib/schema";
 import AuthButton from "./AuthButton";
 import { Field, ItemTools, VariantChips, formatDate, move, type Update } from "./ui";
 import ImportPanel from "./ImportPanel";
@@ -10,10 +10,11 @@ import HistoryPanel from "./HistoryPanel";
 import IconEditor from "./IconEditor";
 import PhotoEditor from "./PhotoEditor";
 
-type Tab = "profile" | "experience" | "projects" | "skills" | "education" | "resume" | "import" | "history";
+type Tab = "profile" | "theme" | "experience" | "projects" | "skills" | "education" | "resume" | "import" | "history";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "profile", label: "Profile" },
+  { id: "theme", label: "Theme" },
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "skills", label: "Skills" },
@@ -154,6 +155,7 @@ export default function Editor(props: {
           )}
 
           {tab === "profile" && <ProfilePanel content={content} update={update} />}
+          {tab === "theme" && <ThemePanel content={content} update={update} dirty={dirty} />}
           {tab === "experience" && <ExperiencePanel content={content} update={update} />}
           {tab === "projects" && <ProjectsPanel content={content} update={update} />}
           {tab === "skills" && <SkillsPanel content={content} update={update} />}
@@ -237,6 +239,24 @@ function ProfilePanel({ content, update }: PanelProps) {
             <ItemTools index={i} count={content.focusAreas.length} label="focus area" onMove={(to) => update((d) => move(d.focusAreas, i, to))} onRemove={() => update((d) => { d.focusAreas.splice(i, 1); })} />
             <Field id={`f-${f.id}-t`} label="Title" value={f.title} onChange={(v) => update((d) => { d.focusAreas[i].title = v; })} />
             <Field id={`f-${f.id}-b`} label="Text" value={f.body} onChange={(v) => update((d) => { d.focusAreas[i].body = v; })} multiline />
+          </div>
+        ))}
+      </div>
+
+      <SectionHead
+        title="Key numbers"
+        intro="Short results like 50%+ or 20→1 min, each with a one-line meaning. Shown prominently by most themes (not by Original). Leave empty to hide."
+        addLabel="Add number"
+        onAdd={() => update((d) => { d.highlights.push({ id: newId(), value: "", label: "" }); })}
+      />
+      <div className="adm-list">
+        {content.highlights.map((h, i) => (
+          <div className="adm-item" key={h.id}>
+            <ItemTools index={i} count={content.highlights.length} label="number" onMove={(to) => update((d) => move(d.highlights, i, to))} onRemove={() => update((d) => { d.highlights.splice(i, 1); })} />
+            <div className="adm-grid skill">
+              <Field id={`h-${h.id}-v`} label="Number" value={h.value} onChange={(v) => update((d) => { d.highlights[i].value = v; })} placeholder="50%+" />
+              <Field id={`h-${h.id}-l`} label="What it means" value={h.label} onChange={(v) => update((d) => { d.highlights[i].label = v; })} />
+            </div>
           </div>
         ))}
       </div>
@@ -427,6 +447,40 @@ function EducationPanel({ content, update }: PanelProps) {
             <ItemTools index={i} count={content.languages.length} label="language" onMove={(to) => update((d) => move(d.languages, i, to))} onRemove={() => update((d) => { d.languages.splice(i, 1); })} />
           </div>
         ))}
+      </div>
+    </section>
+  );
+}
+
+function ThemePanel({ content, update, dirty }: PanelProps & { dirty: boolean }) {
+  return (
+    <section className="adm-panel">
+      <SectionHead
+        title="Theme"
+        intro="Choose how the public site looks. Every theme uses the same content. The choice goes live when you Save & publish."
+      />
+      {dirty && (
+        <p className="adm-banner">Previews show the last published content. Save & publish first if you want them to include your latest edits.</p>
+      )}
+      <div className="adm-themes" role="radiogroup" aria-label="Site theme">
+        {THEMES.map((t) => {
+          const on = content.theme === t.id;
+          return (
+            <div key={t.id} className={`adm-theme${on ? " on" : ""}`}>
+              <label className="adm-theme-pick">
+                <input type="radio" name="site-theme" value={t.id} checked={on} onChange={() => update((d) => { d.theme = t.id; })} />
+                <span className="adm-swatches" aria-hidden="true">
+                  {t.swatches.map((c) => <span key={c} style={{ background: c }} />)}
+                </span>
+                <span className="adm-theme-text">
+                  <strong>{t.label}{on ? " · selected" : ""}</strong>
+                  <span className="adm-muted">{t.description}</span>
+                </span>
+              </label>
+              <a className="adm-btn" href={`/preview/${t.id}`} target="_blank" rel="noopener">Preview live ↗</a>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
